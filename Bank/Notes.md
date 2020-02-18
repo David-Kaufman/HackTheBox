@@ -4,7 +4,7 @@
 # Table of Contents <!-- omit in toc -->
 - [Scan Results](#scan-results)
   - [Nmap](#nmap)
-    - [Ports:](#ports)
+    - [Ports](#ports)
   - [DNS Enumeration](#dns-enumeration)
       - [Nslookup](#nslookup)
       - [Dnsrecon](#dnsrecon)
@@ -43,7 +43,7 @@ Service detection performed. Please report any incorrect results at https://nmap
 
 ```
 
-### Ports:
+### Ports
 * 22- SSH  
   
 * 53 - tcp dns-nsid.  
