@@ -5,9 +5,10 @@
 - [Scan Results](#scan-results)
   - [Nmap](#nmap)
     - [Ports:](#ports)
-    - [DNS Enumeration](#dns-enumeration)
+  - [DNS Enumeration](#dns-enumeration)
       - [Nslookup](#nslookup)
       - [Dnsrecon](#dnsrecon)
+      - [Zone Transfer](#zone-transfer)
 - [Expolit](#expolit)
 - [Post Exploit](#post-exploit)
 - [Flags](#flags)
@@ -50,7 +51,7 @@ Service detection performed. Please report any incorrect results at https://nmap
 
 * 80 - Http
 
-### DNS Enumeration
+## DNS Enumeration
 #### Nslookup
 ```
 nslookup 
@@ -67,7 +68,7 @@ now type an addresse to see if we get any information.
 * `127.0.0.1` 
 * `10.10.10.29`
 * `bank.htb`
-  
+
 #### Dnsrecon
 
 ```
@@ -77,6 +78,24 @@ dnsrecon -r 127.0.1.0/24 -n 10.10.10.29
 
 dnsrecon -r 10.10.10.0/24 -n 10.10.10.29
 ```
+
+#### Zone Transfer
+```
+dig axfr @10.10.10.29
+```
+we get nothing - zone transfers arent enabled for the root zone
+now we try:
+
+```
+dig axfr bank.htb @10.10.10.29
+```
+and we get aPfew responses
+
+* chris.bank.htb
+* ns.bank.htb
+* www.bank.htb
+  
+
 # Expolit
 
 # Post Exploit
