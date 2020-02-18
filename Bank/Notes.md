@@ -9,6 +9,7 @@
       - [Nslookup](#nslookup)
       - [Dnsrecon](#dnsrecon)
       - [Zone Transfer](#zone-transfer)
+  - [Web](#web)
 - [Expolit](#expolit)
 - [Post Exploit](#post-exploit)
 - [Flags](#flags)
@@ -95,6 +96,20 @@ and we get aPfew responses
 * ns.bank.htb
 * www.bank.htb
   
+add bank as our DNS server by adding to result.conf
+```
+vi /etc/resolv.conf
+
+nameserver 10.10.10.29
+```
+now we can `ping bank.htb`
+
+## Web
+
+Opening a browser and going to 10.10.10.29
+we get the default apache web page.  
+If we go to bak.htb we get a login page.
+
 
 # Expolit
 
