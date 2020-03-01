@@ -21,7 +21,7 @@
 * Port 80 is open - we get a website
 
 ## Gobuster
-install gobuster
+install gobuster if you dont have it
 
 ```
 apt-get install gobuster
@@ -65,7 +65,7 @@ by OJ Reeves (@TheColonial) & Christian Mehlmauer (@_FireFart_)
 * /javascript 
 * /phpmyadmin
 
-download files from /plugins folder and extracted BlockyCore.jar using
+Download files from /plugins folder and extracted BlockyCore.jar using
 
 ```
 jar xf ./BlockyCore.jar
