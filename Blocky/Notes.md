@@ -141,7 +141,7 @@ We get a shell notch:
 
 ![Login](./Pictures/notch_login.png)
 
-Listing the files, we see a _**user.txt**_ file which hold the user flag
+Listing the files, we see a _**user.txt**_ file which hold the user flag.
 
 <!--The password field is hashed. In order to change it we edit the entry.
 change the user_pass column such that the _Function_ field is _MD5_ and the _Value_ is "password".  
@@ -160,5 +160,6 @@ The new password is now "password" and we now we can login into wordpress as Not
 ### User Flag
 at the root directory of user notch we find the _**user.txt**_  file
 which has the flag: _**59fee0977fb60b8a0bc6e41e751f3cd5**_
+
 ### Root Flag
 
