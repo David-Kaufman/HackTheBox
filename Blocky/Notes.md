@@ -11,7 +11,6 @@
     - [Java Files](#java-files)
     - [phpMyAdmin](#phpmyadmin)
 - [Privilege Escalation](#privilege-escalation)
-- [Expolit](#expolit)
     - [Sudo Exploit](#sudo-exploit)
 - [Flags](#flags)
     - [User Flag](#user-flag)
@@ -188,7 +187,7 @@ Listing the files, we see a _**user.txt**_ file which holds the user flag.
 # Privilege Escalation
 Now that we have a shell lets enumerate the box.  
 
-Lets use **_LinEnum_** script. Change location to: _`opt/linux_privesc/LinEnum`_
+Lets use [**_LinEnum_**](https://github.com/rebootuser/LinEnum) script. Change location to: _`opt/linux_privesc/LinEnum`_
 and start a python simple http server on this folder 
 
 ```
@@ -207,8 +206,9 @@ and we can see that notch has ran a sudo command.
 
 which leads us to the next section.
 
-# Expolit
+
 ### Sudo Exploit
+
 _LinEnum_ doesnt show this because it requires us to type the password
 Let see what sudo commands _notch_ can run:
 
