@@ -4,17 +4,17 @@
 # Table of Contents <!-- omit in toc -->
 - [Scan Results](#scan-results)
   - [Nmap](#nmap)
-    - [Ports](#ports)
+    - [**Ports**](#ports)
   - [Gobuster](#gobuster)
-    - [Directories](#directories)
+    - [**Directories**](#directories)
 - [Recon](#recon)
-    - [Java Files](#java-files)
-    - [phpMyAdmin](#phpmyadmin)
+    - [**Java Files**](#java-files)
+    - [**phpMyAdmin**](#phpmyadmin)
 - [Privilege Escalation](#privilege-escalation)
-    - [Sudo Exploit](#sudo-exploit)
+    - [**Sudo Exploit**](#sudo-exploit)
 - [Flags](#flags)
-    - [User Flag](#user-flag)
-    - [Root Flag](#root-flag)
+    - [**User Flag**](#user-flag)
+    - [**Root Flag**](#root-flag)
 
 # Scan Results
 
@@ -42,7 +42,7 @@ Service detection performed. Please report any incorrect results at https://nmap
 # Nmap done at Sun Mar  1 15:14:18 2020 -- 1 IP address (1 host up) scanned in 18.22 seconds
 
 ```
-### Ports
+### **Ports**
 * 21 - FTP
 * 22 - SSH
 * 80 - HTTP
@@ -84,7 +84,7 @@ by OJ Reeves (@TheColonial) & Christian Mehlmauer (@_FireFart_)
 ===============================================================
 ```
 
-### Directories
+### **Directories**
 * /wiki 
 * /wp-content 
 * /plugins 
@@ -94,7 +94,7 @@ by OJ Reeves (@TheColonial) & Christian Mehlmauer (@_FireFart_)
 
 # Recon
 
-### Java Files
+### **Java Files**
 
 Download files from /plugins folder and extract BlockyCore.jar using
 
@@ -152,7 +152,7 @@ Username: root
 Password: 8YsqfCTnvxAUeduzjNSXe22
 ```
 
-### phpMyAdmin
+### **phpMyAdmin**
 
 Go to the phpmyadmin page, and login as root. Click on Databses at the top left  
 
@@ -207,7 +207,7 @@ and we can see that notch has ran a sudo command.
 which leads us to the next section.
 
 
-### Sudo Exploit
+### **Sudo Exploit**
 
 _LinEnum_ doesnt show this because it requires us to type the password
 Let see what sudo commands _notch_ can run:
@@ -224,10 +224,10 @@ to get root on the box. change to the root directory and `cat` the flag.
 
 # Flags
 
-### User Flag
+### **User Flag**
 at the root directory of user notch we find the _**user.txt**_ file
 which has the flag: _**59fee0977fb60b8a0bc6e41e751f3cd5**_
 
-### Root Flag
+### **Root Flag**
 at the root directory of user root we find the _**root.txt**_ file
 which has the flag: _**0a9694a5b4d272c694679f7860f1cd5f**_
