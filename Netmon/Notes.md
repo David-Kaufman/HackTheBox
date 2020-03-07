@@ -81,18 +81,49 @@ the username is: `Anonymous` and the password can be left blank
 
 ![FTP Login](./Pictures/ftp_login.png)
 
-Commands:
+#### Commands: <!-- omit in toc -->
 * `dir` - List files
 * `dir -a` - Show hidden files.
 * `ls`  - List files - jist like dir
 * `cd`  - Change directory. spaces in the file path can be escaped by `\` (backslash) or use double quotes.
 * `get` - Download a file.
 * `pwd` - Print current directory.
-* `lcd` - Canges the working directory on the local computer. By default, the working directory is the directory in which ftp was started.
+* `lcd` - Canges the working directory on the local computer. By default, the working directory is the directory in which ftp was started. Files which were download using the get command will go into this folder.
 * `?`   - Shows all the possible commands.
 
 The User.txt file can be found on `Users\Public` folder.
 
+#### Getting more information about this box: <!-- omit in toc -->
+Interesting files to grab inorder to get information about the machine: [Path Traversal Cheat Sheet: Windows](https://gracefulsecurity.com/path-traversal-cheat-sheet-windows/)
+
+For example the hosts file:
+
+1. `\WINDOWS\System32\drivers\etc\hosts` - hosts file.
+   
+These are not included in the list but are interesting as well:
+
+1. `\WINDOWS\WindowsUpdate.log` - Inforamtion about the updates that were applied.
+2. `\WINDOWS\SoftwareDistribution\Download` - Windows updates are placed here.
+3. `\WINDOWS\System32\license.rtf` - Windwos license file which can tell us which version of windows is running
+
+By this point we got the user flag and alot of information about the machine. Using the ftp prompt we notice that we dont hae access to the \Users\Administrator folder, so lets look at the web server.
+
+Running dirbuster or gobuster doesnt yield any intersting information.
+Searching exploit-DB we find no exploit which we can fire and forget.
+
+After some more googling we find: [PRTG < 18.2.39 Command Injection Vulnerability](https://www.codewatch.org/blog/?p=453). According to this post:
+
+> ... Many network monitoring tools include the capability of running external programs as part of a “notification” as a feature. PRTG is no exception ...
+
+that is if we can log into the web server. The default credentials “prtgadmin / prtgadmin” do not work.  
+
+Some more googling and we find this: [How and where does PRTG store its data?](https://kb.paessler.com/en/topic/463-how-and-where-does-prtg-store-its-data). This gives us a hint that maybe we should go back to the ftp prompt and look around for the installation directory of this "Network Monitor" application. Looking in **Program Files** and **Program Files (x86)** we find noting of interest. If we remember to use `dir -a` we can find the **Program Data** folder
+
+![hidden_files](./Pictures/hidden_files.png)
+
+navigate to `/ProgramData/Paessler/PRTG Network Monitor` and get the configuration _.old.bak_ file
+
+![Installation files](./Pictures/prtg_files.png)
 
 # Post Exploit
 
