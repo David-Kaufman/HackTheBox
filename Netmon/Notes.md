@@ -5,8 +5,11 @@
 - [Scan Results](#scan-results)
   - [Nmap](#nmap)
     - [Ports](#ports)
-- [Expolit](#expolit)
+    - [Directories](#directories)
+- [Recon](#recon)
     - [FTP](#ftp)
+    - [Web Service](#web-service)
+- [Exploit](#exploit)
 - [Post Exploit](#post-exploit)
 - [Flags](#flags)
     - [User Flag](#user-flag)
@@ -74,7 +77,10 @@ Service detection performed. Please report any incorrect results at https://nmap
   SMB is a network protocol used by Windows-based computers that allows systems within the same network to share files. It allows computers connected to the same network or domain to access files from other local computers as easily as if they were on the computer's local hard drive.  
   With an administrative username we can use PSEXEC and get a remote shell.
 
-# Expolit
+### Directories
+Running dirbuster or gobuster doesnt yield any intersting information.
+
+# Recon
 ### FTP
 the ftp serer allows anonymous login to the box: `ftp 10.10.10.152`
 the username is: `Anonymous` and the password can be left blank
@@ -106,7 +112,8 @@ These are not included in the list but are interesting as well:
 2. `\WINDOWS\SoftwareDistribution\Download` - Windows updates are placed here.
 3. `\WINDOWS\System32\license.rtf` - Windwos license file which can tell us which version of windows is running
 
-By this point we got the user flag and alot of information about the machine. Using the ftp prompt we notice that we dont hae access to the \Users\Administrator folder, so lets look at the web server.
+### Web Service
+By this point we got the user flag and alot of information about the machine. Using the ftp prompt we notice that we dont have access to the \Users\Administrator folder, so lets look at the web server.
 
 Running dirbuster or gobuster doesnt yield any intersting information.
 Searching exploit-DB we find no exploit which we can fire and forget.
@@ -121,9 +128,27 @@ Some more googling and we find this: [How and where does PRTG store its data?](h
 
 ![hidden_files](./Pictures/hidden_files.png)
 
-navigate to `/ProgramData/Paessler/PRTG Network Monitor` and get the configuration _.old.bak_ file
+navigate to `/ProgramData/Paessler/PRTG Network Monitor` and get the configuration _.old.bak_ file. Rename the file to _.xml_ and view in the browser if you like.
 
 ![Installation files](./Pictures/prtg_files.png)
+
+Scrolling down we see:
+
+```xml
+<dbpassword>
+    <!-- User: prtgadmin -->
+    PrTg@dmin2018
+</dbpassword>
+```
+
+This password doesnt work, but remember that this is a backup file, so change 2018 to 2019 and success! we are in.
+
+```
+User: prtgadmin
+Password: PrTg@dmin2019
+```
+
+# Exploit
 
 # Post Exploit
 
