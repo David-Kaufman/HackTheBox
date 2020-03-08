@@ -5,7 +5,7 @@
 - [Scan Results](#scan-results)
   - [Nmap](#nmap)
     - [Ports](#ports)
-    - [Directories](#directories)
+  - [Directories](#directories)
 - [Recon](#recon)
     - [FTP](#ftp)
     - [Web Service](#web-service)
@@ -76,7 +76,7 @@ Service detection performed. Please report any incorrect results at https://nmap
   SMB is a network protocol used by Windows-based computers that allows systems within the same network to share files. It allows computers connected to the same network or domain to access files from other local computers as easily as if they were on the computer's local hard drive.  
   With an administrative username we can use PSEXEC and get a remote shell.
 
-### Directories
+## Directories
 Running dirbuster or gobuster doesnt yield any intersting information.
 
 # Recon
