@@ -4,6 +4,9 @@
 # Table of Contents <!-- omit in toc -->
 - [Scan Results](#scan-results)
   - [Nmap](#nmap)
+    - [Ports](#ports)
+  - [Directories](#directories)
+- [Recon](#recon)
 - [Expolit](#expolit)
 - [Post Exploit](#post-exploit)
 - [Flags](#flags)
@@ -14,7 +17,11 @@
 
 ## Nmap
 
-### Ports: <!-- omit in toc -->
+### Ports
+
+## Directories
+
+# Recon
 
 # Expolit
 
